@@ -1,8 +1,9 @@
 fastapi
 uvicorn
-SQLAlchemy
+SQLAlchemy==1.3.24
 pydantic
 databases[postgresql]
 psycopg2-binary
 python-multipart
 python-dotenv
+httpx

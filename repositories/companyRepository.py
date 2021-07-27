@@ -3,7 +3,7 @@ from models.companies import Company
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from datetime import datetime
-
+from services.coupler import is_symbol_present
 
 def get_all(db: Session):
     companies = db.query(Company).all()
@@ -12,6 +12,11 @@ def get_all(db: Session):
 
 def create(request: companiesSchema.CompanyCreate, db: Session):
     new_company = Company(name=request.name, symbol_id=request.symbol_id)
+    if not is_symbol_present(new_company.symbol_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Symbol with id: {new_company.symbol_id} not found, please add symbol first"
+        )
     new_company.created_at = datetime.utcnow()
     db.add(new_company)
     db.commit()
